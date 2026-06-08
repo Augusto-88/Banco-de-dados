@@ -1,0 +1,62 @@
+--1 ------------------------------------------------------------------------------------------
+SELECT nome, cidade FROM Hospitais;
+--2 ------------------------------------------------------------------------------------------
+SELECT nome, crm, salario FROM Medicos;
+--3 ------------------------------------------------------------------------------------------
+SELECT nome, tipo_sanguineo FROM Pacientes;
+--4 ------------------------------------------------------------------------------------------
+SELECT nome, estoque FROM Medicamentos WHERE estoque < 50;
+--5 ------------------------------------------------------------------------------------------
+SELECT nome, alergias FROM Pacientes WHERE alergias IS NOT NULL AND alergias <> '';
+--6 ------------------------------------------------------------------------------------------
+SELECT c.consulta_id, p.nome AS paciente, m.nome AS medico, c.data_consulta, c.valor
+FROM Consultas c
+JOIN Pacientes p ON c.paciente_id = p.paciente_id
+JOIN Medicos m ON c.medico_id = m.medico_id
+WHERE c.data_consulta > @data_professor;
+--7 ------------------------------------------------------------------------------------------
+SELECT e.exame_id, p.nome AS paciente, e.tipo, e.data_exame
+FROM Exames e
+JOIN Pacientes p ON e.paciente_id = p.paciente_id
+WHERE e.data_exame BETWEEN @inicio AND @fim;
+--8 ------------------------------------------------------------------------------------------
+SELECT nome, setor, salario FROM Funcionarios WHERE salario BETWEEN 2500 AND 6000;
+--9 ------------------------------------------------------------------------------------------
+SELECT quarto_id, numero, status FROM Quartos WHERE status = 'Disponível';
+--10 ------------------------------------------------------------------------------------------
+SELECT pagamento_id, consulta_id, forma_pagamento, valor, data_pagamento
+FROM Pagamentos
+WHERE forma_pagamento = @formaPagamento;
+--11 ------------------------------------------------------------------------------------------
+SELECT COUNT(*) AS total_pacientes FROM Pacientes;
+--12 ------------------------------------------------------------------------------------------
+SELECT AVG(valor) AS valor_medio_consulta FROM Consultas;
+--13 ------------------------------------------------------------------------------------------
+SELECT MIN(valor) AS menor_valor_consulta FROM Consultas;
+--14 ------------------------------------------------------------------------------------------
+SELECT e.nome AS especialidade, COUNT(m.medico_id) AS quantidade
+FROM Medicos m
+LEFT JOIN Especialidades e ON m.especialidade_id = e.especialidade_id
+GROUP BY e.especialidade_id, e.nome;
+--15 ------------------------------------------------------------------------------------------
+SELECT setor, COUNT(*) AS quantidade FROM Funcionarios GROUP BY setor;
+--16 ------------------------------------------------------------------------------------------
+SELECT m.nome AS medico, e.nome AS especialidade
+FROM Medicos m
+LEFT JOIN Especialidades e ON m.especialidade_id = e.especialidade_id
+ORDER BY m.nome;
+--17 ------------------------------------------------------------------------------------------
+SELECT f.nome AS funcionario, h.nome AS hospital
+FROM Funcionarios f
+LEFT JOIN Hospitais h ON f.hospital_id = h.hospital_id;
+--18 ------------------------------------------------------------------------------------------
+SELECT p.nome AS paciente, c.data_consulta
+FROM Pacientes p
+JOIN Consultas c ON p.paciente_id = c.paciente_id
+ORDER BY p.nome, c.data_consulta;
+--19 ------------------------------------------------------------------------------------------
+SELECT nome, preco FROM Medicamentos WHERE preco = (SELECT MAX(preco) FROM Medicamentos);
+--20 ------------------------------------------------------------------------------------------
+SELECT nome, salario
+FROM Medicos
+WHERE salario > (SELECT AVG(salario) FROM Medicos);
