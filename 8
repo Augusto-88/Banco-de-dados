@@ -1,0 +1,305 @@
+--SELECTS (FROM)
+
+-- 1
+SELECT * FROM Clientes;
+
+-- 2
+SELECT nome, telefone FROM Clientes;
+
+-- 3
+SELECT * FROM Produtos;
+
+-- 4
+SELECT nome, preco FROM Produtos;
+
+-- 5
+SELECT * FROM Funcionarios;
+
+-- 6
+SELECT nome, cargo FROM Funcionarios;
+
+-- 7
+SELECT * FROM Vendas;
+
+-- 8
+SELECT data, total FROM Compras;
+
+-- 9
+SELECT descricao, preco FROM Produtos;
+
+-- 10
+SELECT * FROM Filiais;
+
+-- 11
+SELECT nome, quantidade_estoque FROM Produtos;
+
+--WHERE
+
+-- 1
+SELECT * FROM Clientes WHERE pontos_fidelidade > 100;
+
+-- 2
+SELECT * FROM Produtos WHERE preco > 50;
+
+-- 3
+SELECT * FROM Funcionarios WHERE salario > 3000;
+
+-- 4
+SELECT * FROM Produtos WHERE quantidade_estoque < 10;
+
+-- 5
+SELECT * FROM Compras WHERE data = '2025-01-10';
+
+-- 6
+SELECT * FROM Clientes WHERE telefone IS NOT NULL;
+
+-- 7
+SELECT * FROM Funcionarios WHERE cargo = 'Caixa';
+
+-- 8
+SELECT * FROM Produtos WHERE id_filial = 1;
+
+-- 9
+SELECT * FROM Vendas WHERE total > 500;
+
+-- 10
+SELECT * FROM Fornecedores WHERE nome = 'Distribuidora Alfa';
+
+ORDER BY
+
+-- 1
+SELECT * FROM Produtos ORDER BY nome ASC;
+
+-- 2
+SELECT * FROM Produtos ORDER BY preco DESC;
+
+-- 3
+SELECT * FROM Clientes ORDER BY pontos_fidelidade ASC;
+
+-- 4
+SELECT * FROM Funcionarios ORDER BY salario DESC;
+
+-- 5
+SELECT * FROM Vendas ORDER BY data DESC;
+
+-- 6
+SELECT * FROM Compras ORDER BY total DESC;
+
+-- 7
+SELECT * FROM Produtos ORDER BY quantidade_estoque ASC;
+
+-- 8
+SELECT * FROM Fornecedores ORDER BY nome ASC;
+
+-- 9
+SELECT * FROM Filiais ORDER BY endereco ASC;
+
+-- 10
+SELECT * FROM Funcionarios ORDER BY cargo ASC, nome ASC;
+
+-- 11
+SELECT * FROM Produtos ORDER BY id_categoria ASC, preco DESC;
+
+--GROUP BY / AGREGAÇÕES
+
+-- 1 Quantidade de produtos por categoria
+SELECT id_categoria, COUNT(*) AS qtd_produtos
+FROM Produtos
+GROUP BY id_categoria;
+
+-- 2 Total vendido por cliente
+SELECT id_cliente, SUM(total) AS total_vendido
+FROM Vendas
+GROUP BY id_cliente;
+
+-- 3 Média salarial por cargo
+SELECT cargo, AVG(salario) AS media_salario
+FROM Funcionarios
+GROUP BY cargo;
+
+-- 4 Quantidade de funcionários por filial
+SELECT id_filial, COUNT(*) AS qtd_funcionarios
+FROM Funcionarios
+GROUP BY id_filial;
+
+-- 5 Total de vendas por filial
+SELECT id_filial, SUM(total) AS total_filial
+FROM Vendas
+GROUP BY id_filial;
+
+-- 6 Quantidade de produtos por fornecedor
+SELECT id_fornecedor, COUNT(*) AS qtd_produtos
+FROM Produtos
+GROUP BY id_fornecedor;
+
+-- 7 Total comprado por fornecedor
+SELECT id_fornecedor, SUM(total) AS total_compras
+FROM Compras
+GROUP BY id_fornecedor;
+
+-- 8 Média de preços por categoria
+SELECT id_categoria, AVG(preco) AS media_preco
+FROM Produtos
+GROUP BY id_categoria;
+
+-- 9 Soma dos pontos por endereço (exemplo de agrupamento)
+SELECT endereco, SUM(pontos_fidelidade) AS soma_pontos
+FROM Clientes
+GROUP BY endereco;
+
+-- 10 Quantidade total vendida por produto (itens)
+SELECT id_produto, SUM(quantidade) AS total_vendido
+FROM ItensVenda
+GROUP BY id_produto;
+
+-- 11 Maior salário por cargo
+SELECT cargo, MAX(salario) AS maior_salario
+FROM Funcionarios
+GROUP BY cargo;
+
+--HAVING
+
+-- 1 Categorias com mais de 5 produtos
+SELECT id_categoria, COUNT(*) AS qtd
+FROM Produtos
+GROUP BY id_categoria
+HAVING COUNT(*) > 5;
+
+-- 2 Filiais com total de vendas acima de 10000
+SELECT id_filial, SUM(total) AS total_vendido
+FROM Vendas
+GROUP BY id_filial
+HAVING SUM(total) > 10000;
+
+-- 3 Cargos com média salarial acima de 3000
+SELECT cargo, AVG(salario) AS media_sal
+FROM Funcionarios
+GROUP BY cargo
+HAVING AVG(salario) > 3000;
+
+-- 4 Fornecedores com mais de 10 produtos
+SELECT id_fornecedor, COUNT(*) AS qtd_prod
+FROM Produtos
+GROUP BY id_fornecedor
+HAVING COUNT(*) > 10;
+
+-- 5 Funcionários com mais de 20 vendas
+SELECT id_funcionario, COUNT(*) AS qtd_vendas
+FROM Vendas
+GROUP BY id_funcionario
+HAVING COUNT(*) > 20;
+
+-- 6 Filiais com mais de 3 funcionários
+SELECT id_filial, COUNT(*) AS qtd_func
+FROM Funcionarios
+GROUP BY id_filial
+HAVING COUNT(*) > 3;
+
+-- 7 Categorias com estoque total acima de 500
+SELECT id_categoria, SUM(quantidade_estoque) AS estoque_total
+FROM Produtos
+GROUP BY id_categoria
+HAVING SUM(quantidade_estoque) > 500;
+
+-- 8 Fornecedores cujo total de compras > 5000
+SELECT id_fornecedor, SUM(total) AS total_compras
+FROM Compras
+GROUP BY id_fornecedor
+HAVING SUM(total) > 5000;
+
+-- 9 Datas com mais de 10 vendas
+SELECT data, COUNT(*) AS qtd_vendas
+FROM Vendas
+GROUP BY data
+HAVING COUNT(*) > 10;
+
+-- 10 Endereços com soma de pontos > 200
+SELECT endereco, SUM(pontos_fidelidade) AS soma_pontos
+FROM Clientes
+GROUP BY endereco
+HAVING SUM(pontos_fidelidade) > 200;
+
+-- 11 Cargos cujo maior salário > 7000
+SELECT cargo, MAX(salario) AS maior_sal
+FROM Funcionarios
+GROUP BY cargo
+HAVING MAX(salario) > 7000;
+
+--JOINS
+
+-- 1 Produtos e categorias
+SELECT p.nome AS produto, c.nome AS categoria
+FROM Produtos p
+JOIN Categorias c ON p.id_categoria = c.id_categoria;
+
+-- 2 Produtos e fornecedores
+SELECT p.nome AS produto, f.nome AS fornecedor
+FROM Produtos p
+JOIN Fornecedores f ON p.id_fornecedor = f.id_fornecedor;
+
+-- 3 Funcionários e suas filiais
+SELECT fu.nome AS funcionario, fi.nome AS filial
+FROM Funcionarios fu
+JOIN Filiais fi ON fu.id_filial = fi.id_filial;
+
+-- 4 Vendas e nomes dos clientes
+SELECT v.id_venda, v.data, c.nome AS cliente
+FROM Vendas v
+LEFT JOIN Clientes c ON v.id_cliente = c.id_cliente;
+
+-- 5 Compras e fornecedores
+SELECT co.id_compra, co.data, f.nome AS fornecedor
+FROM Compras co
+JOIN Fornecedores f ON co.id_fornecedor = f.id_fornecedor;
+
+-- 6 ItensVenda com nomes dos produtos
+SELECT iv.id_venda, p.nome AS produto, iv.quantidade, iv.subtotal
+FROM ItensVenda iv
+JOIN Produtos p ON iv.id_produto = p.id_produto;
+
+-- 7 Produtos e filiais
+SELECT p.nome AS produto, fi.nome AS filial
+FROM Produtos p
+JOIN Filiais fi ON p.id_filial = fi.id_filial;
+
+-- 8 Vendas e funcionários responsáveis
+SELECT v.id_venda, fu.nome AS funcionario
+FROM Vendas v
+JOIN Funcionarios fu ON v.id_funcionario = fu.id_funcionario;
+
+-- 9 Compras e filiais
+SELECT co.id_compra, fi.nome AS filial, co.total
+FROM Compras co
+JOIN Filiais fi ON co.id_filial = fi.id_filial;
+
+-- 10 Clientes e suas vendas
+SELECT c.nome AS cliente, v.id_venda, v.total
+FROM Clientes c
+JOIN Vendas v ON c.id_cliente = v.id_cliente;
+
+-- 11 Detalhes completos das vendas (múltiplos JOINs)
+SELECT v.id_venda, c.nome AS cliente, fu.nome AS funcionario, fi.nome AS filial, v.total
+FROM Vendas v
+LEFT JOIN Clientes c ON v.id_cliente = c.id_cliente
+JOIN Funcionarios fu ON v.id_funcionario = fu.id_funcionario
+JOIN Filiais fi ON v.id_filial = fi.id_filial;
+
+--ALTER TABLE
+
+-- Renomear tabela
+ALTER TABLE Clientes RENAME TO ClientesVIP;
+
+-- Adicionar coluna
+ALTER TABLE Produtos ADD marca VARCHAR(50);
+
+-- Remover coluna
+ALTER TABLE Produtos DROP COLUMN marca;
+
+-- Modificar tamanho VARCHAR
+ALTER TABLE Produtos MODIFY nome VARCHAR(200);
+
+-- Tornar coluna NOT NULL
+ALTER TABLE Clientes MODIFY nome VARCHAR(100) NOT NULL;
+
+-- Renomear coluna
+ALTER TABLE Funcionarios RENAME COLUMN cargo TO funcao;
